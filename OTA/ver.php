@@ -1,0 +1,20 @@
+<?php 
+function parseIniFile($iIniFile){ 
+    $aResult  = 
+    $aMatches = array(); 
+    $a = &$aResult; 
+    $s = '\s*([[:alnum:]_\- \*]+?)\s*'; 
+    preg_match_all('#^\s*((\['.$s.'\])|(("?)'.$s.'\\5\s*=\s*("?)(.*?)\\7))\s*(;[^\n]*?)?$#ms', @file_get_contents($iIniFile), $aMatches, PREG_SET_ORDER); 
+    foreach ($aMatches as $aMatch){ 
+        if (empty($aMatch[2])){$a[$aMatch[6]] = $aMatch[8];} 
+        else{$a = &$aResult [$aMatch[3]];} 
+    } 
+    return $aResult; 
+} 
+$ini = parseIniFile('ver.ini'); 
+$u['ver']=$ini['ver']['ver']; 
+$u['log']=$ini['ver']['log']; 
+if(! file_exists("RenoCon.apk")){$u['ver']="0.0.0";} 
+echo json_encode($u); 
+
+?>
